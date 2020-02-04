@@ -1,35 +1,48 @@
 import React from 'react';
+import { connect } from 'dva';
 
+const namespace = "list";
 
+// 说明：第一个回调函数，作用：将page层和model层进行链接，返回modle中的数据,并且将返回的数据，绑定到this.props
+// 接收第二个函数，这个函数的作用：将定义的函数绑定到this.props中，调用model层中定义的函数
+@connect((state) => {
+    return {
+        dataList : state[namespace].data, // 获取model中定义的data和maxNum
+        maxNum : state[namespace].maxNum
+    }
+}, (dispatch) => { // dispatch的作用：可以调用model层定义的函数
+    return { // 将返回的函数add，绑定到this.props中
+        add : function () {
+            dispatch({ //通过dispatch调用modle中定义的函数,通过type属性，指定函数命名，格式：namespace/函数名
+                type : namespace + "/addNewData"
+            });
+        },
+        init : () => {
+            dispatch({ //通过dispatch调用modle中定义的函数,通过type属性，指定函数命名，格式：namespace/函数名
+                type : namespace + "/initData"
+            });
+        }
+    }
+})
 class  List extends React.Component{
 
-    constructor(props){
-        super(props);
-        this.state = {
-            dataList : [1,2,3],
-            maxNum : 3
-        };
+    componentDidMount(){
+        //初始化的操作
+        this.props.init();
     }
 
-    // 每个组件都有一个状态，保存在this.state中，状态值发生变化，React框架会自动调用render方法重新渲染
-    /*this.state值在构造参数中完成，要修改this.state的值，需要调用this.setState()完成*/
     render(){
         return (
             <div>
                 <ul>
                     {
-                        this.state.dataList.map((value,index)=>{
+                        this.props.dataList.map((value,index)=>{
                             return <li key={index}>{value}</li>
                         })
                     }
                 </ul>
                 <button onClick={() => {
-                    let maxNum = this.state.maxNum + 1;
-                    let list = [...this.state.dataList,maxNum];
-                    this.setState({
-                        dataList: list,
-                        maxNum: maxNum
-                    });
+                    this.props.add();
                 }}>点我</button>
             </div>
         );
