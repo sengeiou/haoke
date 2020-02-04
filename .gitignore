@@ -30,6 +30,7 @@
 **/*.swo
 **/*.swp
 **/*.zip
+**/node_modules
 **/*.vi
 **/*~
 **/*.sass-cache
