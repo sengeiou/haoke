@@ -31,7 +31,7 @@ export default {
             let data = yield call(request, url); //执行请求
             yield put({ // 调用reducers中的方法 更新state
                 type : "addNewData", //指定方法名
-                data : data //传递ajax回来的数据
+                data : data //传递ajax回来的数据 传递到addNewData中的result
             });
         }
     }
