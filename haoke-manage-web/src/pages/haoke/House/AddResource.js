@@ -71,6 +71,12 @@ class AddResource extends PureComponent {
         delete values.houseType_4;
         delete values.houseType_5;
 
+        // 楼盘 id
+        values.estateId = this.state.estateId;
+
+        // 处理图片
+        values.pic = [...this.state.pics].join(',');
+
         dispatch({
           type: 'house/submitHouseForm',
           payload: values,
@@ -93,8 +99,17 @@ class AddResource extends PureComponent {
     });
   };
 
+  // 修改图片上传完成的变更方法
   handleFileList = obj => {
-    console.log(obj, '图片列表');
+    let pics = new Set();
+    obj.forEach((v, k) => {
+      if (v.response) {
+        pics.add(v.response.name);
+      }
+    });
+    this.setState({
+      pics: pics,
+    });
   };
 
   constructor(props) {
