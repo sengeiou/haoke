@@ -9,24 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>haoke-manage-dubbo-server-house-resources</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>haoke-manage-dubbo-server-house-resources-dubbo-interface</module>
-        <module>haoke-manage-dubbo-server-house-resources-dubbo-service</module>
-    </modules>
+    <artifactId>haoke-manage-dubbo-server-generator</artifactId>
 
     <dependencies>
+        <!-- freemarker 模板引擎 -->
         <dependency>
-            <groupId>com.onejane</groupId>
-            <artifactId>haoke-manage-dubbo-server-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <!--需要注意：传递依赖中，如果需要使用，请显示引入-->
-            <optional>true</optional>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.28</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -41,5 +31,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
 </project>

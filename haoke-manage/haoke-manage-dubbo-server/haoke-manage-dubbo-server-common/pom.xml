@@ -9,19 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>haoke-manage-dubbo-server-house-resources</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>haoke-manage-dubbo-server-house-resources-dubbo-interface</module>
-        <module>haoke-manage-dubbo-server-house-resources-dubbo-service</module>
-    </modules>
+    <artifactId>haoke-manage-dubbo-server-common</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.onejane</groupId>
-            <artifactId>haoke-manage-dubbo-server-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -41,5 +31,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
 </project>
