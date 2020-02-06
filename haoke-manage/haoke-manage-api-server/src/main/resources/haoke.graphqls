@@ -2,7 +2,8 @@ schema {
     query: HaokeQuery
 }
 type HaokeQuery {
-    HouseResources(id:Long) : HouseResources
+    HouseResources(id:Long):HouseResources
+    HouseResourcesList(page:Int, pageSize:Int):TableResult
 }
 type HouseResources {
     id:Long!
@@ -27,4 +28,17 @@ type HouseResources {
     mobile:String
     time:Int
     propertyCost:String
+}
+
+
+type TableResult{
+    list:[HouseResources]
+    pagination:Pagination
+}
+
+
+type Pagination{
+    current:Int
+    pageSize:Int
+    total:Int
 }
