@@ -30,3 +30,31 @@ proxy_set_header X-Forwarded-Host $host;
     
 }
 ```
+
+chrome安装Altair GraphQL Client插件
+http://127.0.0.1:18080/graphql
+```$xslt
+{
+    HouseResources(id:1){
+    id
+    time
+    title
+    estateId
+    contact
+  }
+}
+```
+返回
+```$xslt
+{
+  "data": {
+    "HouseResources": {
+      "id": 1,
+      "time": 1,
+      "title": "东方曼哈顿 3室2厅 16000 元",
+      "estateId": 1005,
+      "contact": "张 三"
+    }
+  }
+}
+```
