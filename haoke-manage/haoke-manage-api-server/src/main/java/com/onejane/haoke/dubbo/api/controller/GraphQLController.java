@@ -1,7 +1,7 @@
 package com.onejane.haoke.dubbo.api.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import graphql.ExecutionInput;
 import graphql.GraphQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,21 +27,14 @@ public class GraphQLController {
      */
     @GetMapping
     @ResponseBody
-    public Map<String, Object> query(@RequestParam("query") String query) {
-        return this.graphQL.execute(query).toSpecification();
-    }
-
-    // Apollo Client发起的数据请求为POST请求，现在实现的GraphQL仅仅实现了GET请求处理
-    @PostMapping
-    @ResponseBody
-    public Map<String, Object> postQuery(@RequestBody String json) {
-
+    public Map<String, Object> query(@RequestParam("query") String query,
+                                     @RequestParam(value = "variables", required = false) String variablesJson,
+                                     @RequestParam(value = "operationName", required = false) String operationName) {
         try {
-            JsonNode jsonNode = MAPPER.readTree(json);
-            if(jsonNode.has("query")){
-                String query = jsonNode.get("query").textValue();
-                return this.graphQL.execute(query).toSpecification();
-            }
+            Map<String, Object> variables = MAPPER.readValue(variablesJson, MAPPER.getTypeFactory()
+                    .constructMapType(HashMap.class, String.class, Object.class));
+
+            return this.executeQuery(query, operationName, variables);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,5 +43,38 @@ public class GraphQLController {
         error.put("status", 500);
         error.put("msg", "查询出错");
         return error;
+    }
+
+    // Apollo Client发起的数据请求为POST请求，现在实现的GraphQL仅仅实现了GET请求处理
+    @PostMapping
+    @ResponseBody
+    public Map<String, Object> postQuery(@RequestBody Map<String, Object> param) {
+
+        try {
+            String query = (String) param.get("query");
+            Map variables = (Map) param.get("variables");
+            String operationName = (String) param.get("operationName");
+            return this.executeQuery(query, operationName, variables);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Object> error = new HashMap<>();
+        error.put("status", 500);
+        error.put("msg", "查询出错");
+        return error;
+    }
+
+
+
+
+    private Map<String, Object> executeQuery(String query, String operationName, Map<String, Object> variables){
+        ExecutionInput executionInput = ExecutionInput.newExecutionInput()
+                .query(query)
+                .operationName(operationName)
+                .variables(variables)
+                .build();
+        return this.graphQL.execute(executionInput).toSpecification();
     }
 }

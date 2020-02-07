@@ -146,3 +146,40 @@ result
   }
 }
 ```
+query
+```$xslt
+query hk($id: Long) {
+  HouseResources(id: $id) {
+    id
+    title
+    estateId
+    buildingUnit
+    buildingFloorNum
+    mobile
+    useArea
+    pic
+  }
+}
+
+variables
+{
+  "id": 1
+}
+```
+result
+```$xslt
+{
+  "data": {
+    "HouseResources": {
+      "id": 1,
+      "title": "东方曼哈顿 3室2厅 16000 元",
+      "estateId": 1005,
+      "buildingUnit": "1",
+      "buildingFloorNum": "1",
+      "mobile": "11111111111",
+      "useArea": "2",
+      "pic": null
+    }
+  }
+}
+```
