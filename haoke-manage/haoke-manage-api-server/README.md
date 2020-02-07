@@ -115,3 +115,34 @@ result
   }
 }
 ```
+query
+```$xslt
+{
+  IndexAdList {
+    list {
+      original
+    }
+  }
+}
+
+```
+result
+```$xslt
+{
+  "data": {
+    "IndexAdList": {
+      "list": [
+        {
+          "original": "http://codewj.oss-cn-beijing.aliyuncs.com/images/2019/06/21/15610857626646530.jpg"
+        },
+        {
+          "original": "http://codewj.oss-cn-beijing.aliyuncs.com/images/2019/06/21/15610857423871578.jpg"
+        },
+        {
+          "original": "http://codewj.oss-cn-beijing.aliyuncs.com/images/2019/06/21/1561085716927197.jpg"
+        }
+      ]
+    }
+  }
+}
+```
