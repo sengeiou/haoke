@@ -27,5 +27,11 @@
             <artifactId>graphql-java</artifactId>
             <version>11.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.onejane</groupId>
+            <artifactId>haoke-manage-dubbo-server-ad-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

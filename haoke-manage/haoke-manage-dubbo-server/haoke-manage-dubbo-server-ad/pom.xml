@@ -3,25 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>haoke-manage</artifactId>
+        <artifactId>haoke-manage-dubbo-server</artifactId>
         <groupId>com.onejane</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>haoke-manage-dubbo-server</artifactId>
+    <artifactId>haoke-manage-dubbo-server-ad</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>haoke-manage-dubbo-server-house-resources</module>
-        <module>haoke-manage-dubbo-server-common</module>
-        <module>haoke-manage-dubbo-server-generator</module>
-        <module>haoke-manage-dubbo-server-ad</module>
+        <module>haoke-manage-dubbo-server-ad-interface</module>
+        <module>haoke-manage-dubbo-server-ad-service</module>
     </modules>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>com.onejane</groupId>
+            <artifactId>haoke-manage-dubbo-server-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
