@@ -7,6 +7,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from '../TableList.less';
 import ShowPics from './ShowPics';
+import EditResource from './EditResource';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -88,13 +89,22 @@ class Resource extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>查看</a>
+          <a onClick={() => {}}>查看</a>
+          <Divider type="vertical" />
+          <EditResource record={record} reload={this.reload.bind(this)} />
           <Divider type="vertical" />
           <a href="">删除</a>
         </Fragment>
       ),
     },
   ];
+
+  reload() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'houseResource/fetch',
+    });
+  }
 
   componentDidMount() {
     //当组件挂载完成后执行加载数据
