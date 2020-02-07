@@ -10,6 +10,23 @@ import config from '../../common.js';
 import MapHouse from './maphouse.js';
 import Calculator from './calc.js';
 import SearchBar from './searchbar.js';
+import ApolloClient from "apollo-boost";
+import gql from "graphql-tag";
+
+const client = new ApolloClient({
+  uri: "http://127.0.0.1:18080/graphql"
+});
+
+//定义查询
+const GET_INDEX_ADS = gql`
+    {
+        IndexAdList{
+            list{
+                original
+            }
+        }
+    }
+`;
 
 class Home extends React.Component {
   constructor(props) {
@@ -43,11 +60,18 @@ class Home extends React.Component {
     //     globalLoading: false
     //   })
     // });
-    let swipe = new Promise((resolve, reject) => {
-      axios.post('/homes/swipe').then((data)=>{
-        resolve(data.data.list);
-      });
+    //   let swipe = new Promise((resolve, reject) => {
+    //     // axios.post('/homes/swipe').then((data)=>{
+    //     axios.get('http://127.0.0.1:18080/ad').then((data)=>{ // restful
+    //         resolve(data.data.list);
+    //     });
+    // })
+
+    let swipe = new Promise((resolve, reject) => { // graphql
+      client.query({query: GET_INDEX_ADS}).then(result =>
+          resolve(result.data.IndexAdList.list));
     })
+
     let menu = new Promise((resolve, reject) => {
       axios.post('/homes/menu').then((data)=>{
         resolve(data.data.list);
@@ -134,12 +158,12 @@ class Home extends React.Component {
     const swipeData = this.state.swipeData;
     let swipe = null;
     if(swipeLoading) {
-      swipe = <ImageGallery 
-                preventDefaultTouchmoveEvent={true} 
-                autoPlay={true} 
-                disableSwipe={false} 
-                showThumbnails={false} 
-                items={swipeData} />
+      swipe = <ImageGallery
+          preventDefaultTouchmoveEvent={true}
+          autoPlay={true}
+          disableSwipe={false}
+          showThumbnails={false}
+          items={swipeData} />
     }
     // 菜单渲染
     const menuLoading = this.state.menuLoading;
@@ -148,20 +172,20 @@ class Home extends React.Component {
     if(menuLoading) {
       let list = menuData.map(item => {
         return (
-          <Grid.Column onClick={this.handleMenu.bind(this,item.menu_name)} key={item.id}>
-            <div className='home-menu-item'>
-              <Icon name='home' size='big' />
-            </div>
-            <div>{item.menu_name}</div>
-          </Grid.Column>
+            <Grid.Column onClick={this.handleMenu.bind(this,item.menu_name)} key={item.id}>
+              <div className='home-menu-item'>
+                <Icon name='home' size='big' />
+              </div>
+              <div>{item.menu_name}</div>
+            </Grid.Column>
         )
       })
       menu = (
-        <Grid padded divided >
-          <Grid.Row columns={4}>
-            {list}
-          </Grid.Row>
-        </Grid>
+          <Grid padded divided >
+            <Grid.Row columns={4}>
+              {list}
+            </Grid.Row>
+          </Grid>
       )
     }
     // 渲染资讯
@@ -169,10 +193,10 @@ class Home extends React.Component {
     if(this.state.infoLoading) {
       infos = this.state.infoData.map(item=>{
         return (
-          <Item.Header key={item.id}>
-            <span>限购 ●</span>
-            <span>{item.info_title}</span>
-          </Item.Header>
+            <Item.Header key={item.id}>
+              <span>限购 ●</span>
+              <span>{item.info_title}</span>
+            </Item.Header>
         );
       })
     }
@@ -181,16 +205,16 @@ class Home extends React.Component {
     if(this.state.faqLoading) {
       faq = this.state.faqData.map(item=>{
         return (
-          <li key={item.question_id}>
-            <div>
-              <Icon name='question circle outline' />
-              <span>{item.question_name}</span>
-            </div>
-            <div>
-              {item.question_tag.split(',').map((tag,index)=>{return <Button key={index} basic color='green' size='mini'>{tag}</Button>})}
-              <div>{item.atime} ● <Icon name='comment alternate outline' /> {item.qnum}</div>
-            </div>
-          </li>
+            <li key={item.question_id}>
+              <div>
+                <Icon name='question circle outline' />
+                <span>{item.question_name}</span>
+              </div>
+              <div>
+                {item.question_tag.split(',').map((tag,index)=>{return <Button key={index} basic color='green' size='mini'>{tag}</Button>})}
+                <div>{item.atime} ● <Icon name='comment alternate outline' /> {item.qnum}</div>
+              </div>
+            </li>
         );
       })
     }
@@ -201,19 +225,19 @@ class Home extends React.Component {
     if(this.state.houseLoading) {
       this.state.houseData.forEach(item=>{
         let listInfo = (
-          <Item key={item.id}>
-            <Item.Image src={config.imgBaseUrl+'public/home.png'}/>
-            <Item.Content>
-              <Item.Header>{item.home_name}</Item.Header>
-              <Item.Meta>
-                <span className='cinema'>{item.home_desc}</span>
-              </Item.Meta>
-              <Item.Description>
-                {item.home_tags.split(',').map((tag,index)=>{return <Button key={index} basic color='green' size='mini'>{tag}</Button>})}
-              </Item.Description>
-              <Item.Description>{item.home_price}</Item.Description>
-            </Item.Content>
-          </Item>
+            <Item key={item.id}>
+              <Item.Image src={config.imgBaseUrl+'public/home.png'}/>
+              <Item.Content>
+                <Item.Header>{item.home_name}</Item.Header>
+                <Item.Meta>
+                  <span className='cinema'>{item.home_desc}</span>
+                </Item.Meta>
+                <Item.Description>
+                  {item.home_tags.split(',').map((tag,index)=>{return <Button key={index} basic color='green' size='mini'>{tag}</Button>})}
+                </Item.Description>
+                <Item.Description>{item.home_price}</Item.Description>
+              </Item.Content>
+            </Item>
         );
         if(item.home_type === 1) {
           newHouse.push(listInfo);
@@ -225,58 +249,58 @@ class Home extends React.Component {
       })
     }
     return (
-      <div className='home-container'>
-        {this.state.mapShowFlag?<MapHouse hideMap={this.hideMap}/>:null}
-        {this.state.calcShowFlag?<Calculator hideCalc={this.hideCalc}/>:null}
-        {this.state.searchBarFlag?<SearchBar hideSearchBar={this.hideSearchBar}/>:null}
-        <Dimmer inverted active={this.state.globalLoading} page>
-          <Loader>Loading</Loader>
-        </Dimmer>
-        <div className="home-topbar">
-          <Input onBlur={this.hideSearchBar} onFocus={this.searchHandle} fluid icon={{ name: 'search', circular: true, link: true }} placeholder='搜房源...' />
+        <div className='home-container'>
+          {this.state.mapShowFlag?<MapHouse hideMap={this.hideMap}/>:null}
+          {this.state.calcShowFlag?<Calculator hideCalc={this.hideCalc}/>:null}
+          {this.state.searchBarFlag?<SearchBar hideSearchBar={this.hideSearchBar}/>:null}
+          <Dimmer inverted active={this.state.globalLoading} page>
+            <Loader>Loading</Loader>
+          </Dimmer>
+          <div className="home-topbar">
+            <Input onBlur={this.hideSearchBar} onFocus={this.searchHandle} fluid icon={{ name: 'search', circular: true, link: true }} placeholder='搜房源...' />
+          </div>
+          <div className="home-content">
+            {swipe}
+            {menu}
+            <div className='home-msg'>
+              <Item.Group unstackable>
+                <Item className='home-msg-img' >
+                  <Item.Image size='tiny' src={config.imgBaseUrl+'public/zixun.png'} />
+                  <Item.Content verticalAlign='top'>
+                    {infos}
+                    <div className="home-msg-more">
+                      <Icon name='angle right' size='big' />
+                    </div>
+                  </Item.Content>
+                </Item>
+              </Item.Group>
+            </div>
+            <div className='home-ask'>
+              <div className='home-ask-title'>好客问答</div>
+              <ul>
+                {faq}
+              </ul>
+            </div>
+            <div>
+              <div className='home-hire-title'>最新开盘</div>
+              <Item.Group divided unstackable>
+                {newHouse}
+              </Item.Group>
+            </div>
+            <div>
+              <div className='home-hire-title'>二手精选</div>
+              <Item.Group divided unstackable>
+                {oldHouse}
+              </Item.Group>
+            </div>
+            <div>
+              <div className='home-hire-title'>组一个家</div>
+              <Item.Group divided unstackable>
+                {hireHouse}
+              </Item.Group>
+            </div>
+          </div>
         </div>
-        <div className="home-content">
-          {swipe}
-          {menu}
-          <div className='home-msg'>
-            <Item.Group unstackable>
-              <Item className='home-msg-img' >
-                <Item.Image size='tiny' src={config.imgBaseUrl+'public/zixun.png'} />
-                <Item.Content verticalAlign='top'>
-                  {infos}
-                  <div className="home-msg-more">
-                    <Icon name='angle right' size='big' />
-                  </div>
-                </Item.Content>
-              </Item>
-            </Item.Group>
-          </div>
-          <div className='home-ask'>
-            <div className='home-ask-title'>好客问答</div>
-            <ul>
-              {faq}
-            </ul>
-          </div>
-          <div>
-            <div className='home-hire-title'>最新开盘</div>
-            <Item.Group divided unstackable>
-              {newHouse}
-            </Item.Group>
-          </div>
-          <div>
-            <div className='home-hire-title'>二手精选</div>
-            <Item.Group divided unstackable>
-              {oldHouse}
-            </Item.Group>
-          </div>
-          <div>
-            <div className='home-hire-title'>组一个家</div>
-            <Item.Group divided unstackable>
-              {hireHouse}
-            </Item.Group>
-          </div>
-        </div>
-      </div>
     );
   }
 }
