@@ -183,3 +183,53 @@ result
   }
 }
 ```
+query
+```$xslt
+query HouseResourcesList($pageSize: Int, $page: Int) {
+  HouseResourcesList(pageSize: $pageSize, page: $page) {
+    list {
+      id
+      pic
+      title
+      coveredArea
+      orientation
+      floor
+      rent
+    }
+  }
+}
+variables
+{
+  "pageSize": 2,
+    "page": 1
+}
+```
+result
+```$xslt
+{
+  "data": {
+    "HouseResourcesList": {
+      "list": [
+        {
+          "id": 12,
+          "pic": "http://image.haoke.com/images/2020/02/06/202002061139517030691.jpg,http://image.haoke.com/images/2020/02/06/202002061140231020802.jpg",
+          "title": "个人博客",
+          "coveredArea": "345",
+          "orientation": "南",
+          "floor": "3/3",
+          "rent": 3
+        },
+        {
+          "id": 11,
+          "pic": "http://image.haoke.com/images/2020/02/06/202002061139517030691.jpg",
+          "title": "个人博客",
+          "coveredArea": "345",
+          "orientation": "南",
+          "floor": "3/3",
+          "rent": 3
+        }
+      ]
+    }
+  }
+}
+```
