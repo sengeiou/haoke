@@ -233,3 +233,29 @@ result
   }
 }
 ```
+
+# redis集群
+docker create --name redis-node01 -v /data/redis-data/node01:/data -p 6379:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-01.conf
+docker create --name redis-node02 -v /data/redis-data/node02:/data -p 6380:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-02.conf
+docker create --name redis-node03 -v /data/redis-data/node03:/data -p 6381:6379 redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-03.conf
+
+docker start redis-node01 redis-node02 redis-node03
+docker inspect redis-node01 -> 172.17.0.4 
+docker inspect redis-node02 -> 172.17.0.5 
+docker inspect redis-node03 -> 172.17.0.6
+
+
+docker exec -it redis-node01 /bin/bash
+redis-cli --cluster create 172.17.0.4:6379 172.17.0.5:6379 172.17.0.6:6379 -- cluster-replicas 0
+其中172.17.0.1 为docker0网卡，在客户端（spring-data-redis）是没有办法访问的
+docker stop redis-node01 redis-node02 redis-node03 
+docker rm redis-node01 redis-node02 redis-node03
+rm -rf /data/redis-data
+
+## 基于host搭建
+docker create --name redis-node01 --net host -v /data/redis-data/node01:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-01.conf --port 6379 
+docker create --name redis-node02 --net host -v /data/redis-data/node02:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-02.conf --port 6380 
+docker create --name redis-node03 --net host -v /data/redis-data/node03:/data redis:5.0.2 --cluster-enabled yes --cluster-config-file nodes-node-03.conf --port 6381 
+docker start redis-node01 redis-node02 redis-node03   
+docker exec -it redis-node01 /bin/bash 
+redis-cli --cluster create 10.33.72.81:6379 10.33.72.81:6380 10.33.72.81:6381 --cluster-replicas 0
