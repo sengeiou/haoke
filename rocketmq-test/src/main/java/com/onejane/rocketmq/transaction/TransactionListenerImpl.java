@@ -25,7 +25,7 @@ public class TransactionListenerImpl implements TransactionListener {
             System.out.println("用户A账户减500元.");
             Thread.sleep(500); //模拟调用服务
 
-             System.out.println(1/0);
+//             System.out.println(1/0);
 
             System.out.println("用户B账户加500元.");
             Thread.sleep(800);
@@ -34,6 +34,7 @@ public class TransactionListenerImpl implements TransactionListener {
             STATE_MAP.put(msg.getTransactionId(), LocalTransactionState.COMMIT_MESSAGE);
 
             // 二次提交确认
+            // return LocalTransactionState.UNKNOW; 服务端未获取COMMIT消息，通知生产者调用消息回查，返回commit状态，消费者端才拿到消息，若返回rollback则无法拿到消息
             return LocalTransactionState.COMMIT_MESSAGE;
         } catch (Exception e) {
             e.printStackTrace();
