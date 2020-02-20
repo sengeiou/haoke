@@ -29,3 +29,16 @@ brokerIP1=10.33.72.81
 namesrvAddr=10.33.72.81:9876
 brokerName=broker_haoke_im
 cd rocketmq-all-4.3.2-bin-release/ && bin/mqbroker -c /haoke/rmq/rmqbroker/conf/broker.conf
+
+# docker安装
+docker create -p 9876:9876 --name rmqserver  -e "JAVA_OPT_EXT=-server -Xms128m -Xmx128m -Xmn128m"  -e "JAVA_OPTS=-Duser.home=/opt"  -v /haoke/rmq/rmqserver/logs:/opt/logs  -v /haoke/rmq/rmqserver/store:/opt/store  foxiswho/rocketmq:server-4.3.2
+docker create -p 10911:10911 -p 10909:10909 --name rmqbroker  -e "JAVA_OPTS=-Duser.home=/opt"  -e "JAVA_OPT_EXT=-server -Xms128m -Xmx128m -Xmn128m"  -v /haoke/rmq/rmqbroker/conf/broker.conf:/etc/rocketmq/broker.conf  -v /haoke/rmq/rmqbroker/logs:/opt/logs  -v /haoke/rmq/rmqbroker/store:/opt/store  foxiswho/rocketmq:broker-4.3.2
+docker start rmqserver rmqbroker
+export NAMESRV_ADDR=127.0.0.1:9876
+./tools.sh org.apache.rocketmq.example.quickstart.Producer        发送消息测试，通过nameserver找到broker
+./tools.sh org.apache.rocketmq.example.quickstart.Consumer
+docker stop rmqbroker rmqserver 
+docker rm rmqbroker rmqserver
+
+docker run -di -e "JAVA_OPTS=-Drocketmq.namesrv.addr=10.33.72.81:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false" -p 8082:8080 -t styletang/rocketmq-console-ng:1.0.0
+通过http://10.33.72.81:8082/#/访问
