@@ -7,7 +7,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
-
+// websocket拦截器，可以在建立连接之前写些业务逻辑，比如校验登录等
 @Component
 public class MyHandshakeInterceptor implements HandshakeInterceptor {
 
