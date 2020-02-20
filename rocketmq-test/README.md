@@ -42,3 +42,8 @@ docker rm rmqbroker rmqserver
 
 docker run -di -e "JAVA_OPTS=-Drocketmq.namesrv.addr=10.33.72.81:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false" -p 8082:8080 -t styletang/rocketmq-console-ng:1.0.0
 通过http://10.33.72.81:8082/#/访问
+
+# 高级filter消息
+vim /haoke/rmq/rmqbroker/conf/broker.conf
+enablePropertyFilter=true
+docker restart rmqbroker
